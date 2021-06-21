@@ -1,25 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { Reset, Global, theme } from './styles'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom"
+import { ThemeProvider } from 'styled-components'
 
-function App() {
+import Login from './pages/login'
+import Signup from './pages/signup'
+import Home from './pages/home'
+
+import { isUserLoggedIn } from './helpers/user'
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <Global />
+      <Reset />
+
+      <ThemeProvider theme={theme}>
+          <Router>
+            <Switch>
+              <Route path="/login" exact render={() => (
+                isUserLoggedIn() ? (
+                  <Home />
+                ) : (
+                  <Login />
+                ))}>
+              </Route>
+              <Route path="/signup" exact render={() => (
+                isUserLoggedIn() ? (
+                  <Home />
+                ) : (
+                  <Signup />
+                ))}>
+              </Route>
+              <Route path="/" exact render={() => (
+                isUserLoggedIn() ? (
+                  <Home />
+                ) : (
+                  <Redirect to='/login' />
+                ))}>
+              </Route>
+            </Switch>
+          </Router>
+      </ThemeProvider>
+    </>
+  )
 }
 
 export default App;
